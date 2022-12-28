@@ -1,3 +1,5 @@
+from statistics import mean 
+
 def game_dict():
     return {
         "home": {
@@ -182,3 +184,45 @@ def game_dict():
             ]
         }
     }
+
+def all_players():
+    return game_dict().get("home").get("players") + game_dict().get("away").get("players")
+
+def find_player_by_name(player_name):
+    return next((player for player in all_players() if player.get('name') == player_name), None)
+
+def num_points_per_game(player_name):
+    player = find_player_by_name(player_name)
+    return player.get("points_per_game") if player else "No Player Found With That Name"
+
+def player_age(player_name):
+    player = find_player_by_name(player_name)
+    return player.get("age") if player else "No Player Found With That Name"
+
+def team_colors(team_name):
+    return game_dict().get("home").get('colors') if game_dict().get("home").get("team_name") == team_name else game_dict().get("away").get('colors')
+
+def team_names():
+    return [team_dict.get('team_name') for team_dict in game_dict().values()]
+
+def player_numbers(team_name):
+    players = game_dict().get("home").get("players") if game_dict().get("home").get("team_name") == team_name else game_dict().get("away").get("players") if game_dict().get("away").get("team_name") == team_name else None
+    return [player["number"] for player in players if players]
+
+def player_stats(player_name):
+    return find_player_by_name(player_name)
+
+def average_rebounds_by_shoe_brand():
+    total_by_brand = {}
+    occurrences = {}
+    for player in all_players():
+        shoe_brand = total_by_brand.get(player.get("shoe_brand"))
+        if shoe_brand:
+            total_by_brand[player["shoe_brand"]] += player["rebounds_per_game"]
+            occurrences[player["shoe_brand"]] += 1
+        else:
+            total_by_brand[player["shoe_brand"]] = player["rebounds_per_game"]
+            occurrences[player["shoe_brand"]] = 1
+    for (k, v) in total_by_brand.items():
+        avg = v / occurrences.get(k)
+        print(f"{k}:  {format(avg, '.2f')}")
