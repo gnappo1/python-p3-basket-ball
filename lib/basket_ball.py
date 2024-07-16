@@ -182,3 +182,76 @@ def game_dict():
             ]
         }
     }
+
+# all_players = game_dict()["home"]["players"] + game_dict()["away"]["players"]
+def all_players():
+
+    #! Iterative
+    player_list = []
+    data = game_dict()
+    for team_key in data:
+        player_list.extend(data.get(team_key).get("players"))
+    return player_list
+
+    # return [data.get(team_key).get("players") for team_key in data]
+
+def find_by_name(player_name):
+    try:
+        for player_dict in all_players():
+            if player_name == player_dict.get('name'):
+                return player_dict
+
+        # return f"{player_name} is not in any of our rosters"
+    except Exception as e:
+        print(e)
+
+def num_points_per_game(player_name):
+    return find_by_name(player_name).get('points_per_game')
+
+
+def player_age(player_name):
+    try:
+        for player_dict in all_players():
+            if player_name == player_dict.get('name'):
+                return player_dict.get('age')
+
+        # return f"{player_name} is not in any of our rosters"
+    except Exception as e:
+        print(e)
+
+# print(num_points_per_game("Kevin Love"))
+# print('hello')
+
+def find_longest_name():
+    longest_name_so_far = ""
+    for player_dict in all_players():
+        if len(player_dict.get('name')) > len(longest_name_so_far):
+            longest_name_so_far = player_dict.get("name")
+    return longest_name_so_far
+
+# print(find_longest_name())
+
+def average_rebounds_by_shoe_brand():
+    shoe_dict = {}
+    for player_dict in all_players():
+        shoe_type = player_dict.get('shoe_brand')
+        rebounds = player_dict.get('rebounds_per_game')
+        # if shoe_dict.get(shoe_type):
+        if shoe_type in shoe_dict:
+            shoe_dict[shoe_type].append(rebounds)
+        else:
+            shoe_dict[shoe_type] = [rebounds]
+    for brand in shoe_dict:
+        values = shoe_dict[brand]
+        total = 0
+        for number in values:
+            total += number
+        print(f'{brand}: {(total / len(values)):.2f}')
+average_rebounds_by_shoe_brand()
+
+
+count = 10
+
+while count > 0:
+    print('yay')
+    count -=1
