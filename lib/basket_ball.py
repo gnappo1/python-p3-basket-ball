@@ -1,3 +1,5 @@
+from statistics import mean
+import ipdb
 def game_dict():
     return {
         "home": {
@@ -90,11 +92,10 @@ def game_dict():
                 },
             ],
         },
-            
         "away": {
             "team_name": "Washington Wizards",
             "colors": ["Red", "White", "Navy Blue"],
-            "players": [   
+            "players": [
                 {
                     "name": "Bradley Beal",
                     "number": 3,
@@ -179,6 +180,59 @@ def game_dict():
                     "height_inches": 80,
                     "shoe_brand": "Jordan",
                 },
-            ]
-        }
+            ],
+        },
     }
+
+
+# TODO Helpers
+def find_player_stats_by_name(player_name):
+    for team_data_dict in game_dict().values():
+        for player_dict in team_data_dict.get("players"):
+            if player_name == player_dict.get("name"):
+                return player_dict
+
+
+#! Declare the function (def keyword)
+def num_points_per_game(player_name):
+    player = find_player_stats_by_name(player_name)
+    return player.get("points_per_game") if player else player
+
+
+def player_age(player_name):
+    player = find_player_stats_by_name(player_name)
+    return player.get("age", 0) if player else player
+
+
+def player_numbers(team_name):
+    for team_dict in game_dict().values():
+        if team_dict["team_name"] == team_name:
+            return [player_dict["number"] for player_dict in team_dict["players"]]
+
+
+def average_rebounds_by_shoe_brand():
+    #! do I need any auxiliary DS to temporarily store some data
+    rebounds_per_shoe = {}
+    for team_dict in game_dict().values():
+        for player_dict in team_dict.get("players"):
+            shoe_in_dict = player_dict.get("shoe_brand") in rebounds_per_shoe
+            if shoe_in_dict:
+                rebounds_per_shoe.get(player_dict.get("shoe_brand")).append(
+                    player_dict.get("rebounds_per_game")
+                )
+            else:
+                rebounds_per_shoe[player_dict.get("shoe_brand")] = [
+                    player_dict.get("rebounds_per_game")
+                ]
+    for shoe_brand, list_of_rebounds in rebounds_per_shoe.items():
+        # avg = sum(list_of_rebounds)/len(list_of_rebounds)
+        ipdb.set_trace()
+        avg = mean(list_of_rebounds)
+        print(f"{shoe_brand}: {avg:.2f}")
+
+
+#! Invoke the function
+# num_points_per_game("Ricky Rubio")
+# player_age("Ricky Rubio")
+# player_numbers("Cleveland Cavaliers")
+average_rebounds_by_shoe_brand()
